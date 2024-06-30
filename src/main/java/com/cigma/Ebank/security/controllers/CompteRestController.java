@@ -29,6 +29,8 @@ public class CompteRestController {
         this.compteService = compteService;
     }
 
+
+
     @GetMapping(path = "/users")
 //    @PreAuthorize("hasAuthority('AGENT_GUICHET')") // Autorisation requise pour lister les utilisateurs
     public List<AppUser> appUsers() {

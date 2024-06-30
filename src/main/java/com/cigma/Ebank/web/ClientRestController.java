@@ -6,6 +6,7 @@ import com.cigma.Ebank.security.entities.AppUser;
 import com.cigma.Ebank.services.CompteBancaireService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,13 @@ public class ClientRestController {
         return compteBancaireService.searchClients("%"+keyword+"%");
     }
 
+  /*  @PostAuthorize("hasAuthority('AGENT_GUICHET')")
+    @GetMapping("/clients/search")
+    public ClientDto getCustomerByName(@RequestParam(name = "keyword", defaultValue = "") String keyword, @RequestParam(name = "page", defaultValue = "0") int page) throws ClientNotFoundException {
+        ClientDto customersDTO = compteBancaireService.getClientByUsername("%" + keyword + "%", page);
+        return customersDTO;
+    }*/
+
     @GetMapping("/clients/{id}")
     public ClientDto getClientById (@PathVariable(name = "id") Long clientId) throws ClientNotFoundException {
         return compteBancaireService.getClientById(clientId);
@@ -47,6 +55,10 @@ public class ClientRestController {
     public ClientDto updateClient(@PathVariable Long clientId , @RequestBody ClientDto clientDto){
         clientDto.setId(clientId);
         return compteBancaireService.updateClient(clientDto);
+    }
+@GetMapping("/clients/name/{username}")
+    public ClientDto getIdfromUsername(@PathVariable String username){
+        return compteBancaireService.getClientByUsername(username);
     }
 
     @DeleteMapping("/clients/{id}")

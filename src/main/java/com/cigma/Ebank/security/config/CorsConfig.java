@@ -13,10 +13,10 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Appliquer ces règles à toutes les routes
-                        .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH") // Méthodes HTTP autorisées
-                        .allowedOrigins("*") // Domaines autorisés à faire des requêtes
-                        .allowedHeaders("*"); // En-têtes HTTP autorisés
+                registry.addMapping("/**") // Apply these rules to all routes
+                        .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH") // Allowed HTTP methods
+                        .allowedOrigins("*") // Allowed domains
+                        .allowedHeaders("*"); // Allowed HTTP headers
             }
         };
     }

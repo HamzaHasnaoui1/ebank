@@ -68,27 +68,31 @@ public class CompteBancaireServiceImpl implements CompteBancaireService {
         clientRepository.deleteById(clientId);
     }
 
+
     @Override
-    public CompteBancaireDto SaveCompteBancaire(double initialAmount, String rib, String customerIdentityRef) throws ClientNotFoundException {
-        Client client = clientRepository.findByIdentityRef(customerIdentityRef).orElse(null);
-        if (client ==null)
+    public CompteBancaireDto SaveCompteBancaire(double initialAmount, Long clientId) throws ClientNotFoundException {
+        Client client = clientRepository.findById(clientId).orElse(null);
+        if (client == null) {
             throw new ClientNotFoundException("Customer not found");
-        CompteBancaire compteBancaire =new CompteBancaire();
+        }
+
+        CompteBancaire compteBancaire = new CompteBancaire();
         compteBancaire.setAccountStatus(AccountStatus.OUVERT);
-        generateUniqueRib(compteBancaireRepository);
+        String rib = generateUniqueRib(compteBancaireRepository);
         compteBancaire.setRib(rib);
-        compteBancaire.setSolde( initialAmount);
+        compteBancaire.setSolde(initialAmount);
         compteBancaire.setCreatedAt(new Date());
         compteBancaire.setClient(client);
-        compteBancaire.setId(compteBancaire.getId());
+
         CompteBancaire savedCompteBancaire = compteBancaireRepository.save(compteBancaire);
         return compteBancaireMapper.fromCompteBancaire(savedCompteBancaire);
     }
+
     private String generateUniqueRib(CompteBancaireRepository compteBancaireRepository) {
         String rib;
         do {
             rib = generateRandomRib();
-        } while (this.compteBancaireRepository.existsByRib(rib));
+        } while (compteBancaireRepository.existsByRib(rib));
         return rib;
     }
 
@@ -206,5 +210,34 @@ public class CompteBancaireServiceImpl implements CompteBancaireService {
         List<Client> clients=clientRepository.searchClient(keyword);
         List<ClientDto> clientDtos = clients.stream().map(client -> compteBancaireMapper.fromClient(client)).collect(Collectors.toList());
         return clientDtos;
+    }
+
+
+
+
+
+//    @Override
+//    public ClientDto getClientByName(String keyword, int page) throws ClientNotFoundException {
+//        Page<Client> customers ;
+//
+//        customers = clientRepository.searchByName(keyword,PageRequest.of(page,5));
+//        List<ClientDto> clientDtos=clients.getContent().stream().map(c->compteBancaireMapper.fromClient(c)).collect(Collectors.toList());
+//        if (clients == null)
+//            throw new ClientNotFoundException("customer not fount");
+//
+//        ClientDto clientDto= new ClientDto();
+//        clientDto.setClientDto(clientDto);
+//        clientDto.setTotalpage(clients.getTotalPages());
+//        return clientDto;
+//    }
+
+    @Override
+    public ClientDto getClientByUsername(String username) {
+        Client client = clientRepository.getClientByUsername(username);
+        return  compteBancaireMapper.fromClient(client);
+    }
+    @Override
+    public ClientDto getClientByUsername(String keyword, int page) throws ClientNotFoundException {
+        return null;
     }
 }

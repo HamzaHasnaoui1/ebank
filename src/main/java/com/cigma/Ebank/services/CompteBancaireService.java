@@ -16,7 +16,7 @@ public interface CompteBancaireService {
 
     void deleteClient(Long clientId);
 
-    CompteBancaireDto SaveCompteBancaire(double initialAmount, String rib, String customerIdentityRef ) throws ClientNotFoundException;
+    CompteBancaireDto SaveCompteBancaire(double initialAmount, Long clientId ) throws ClientNotFoundException;
     List<ClientDto> listClients();
     CompteBancaireDto getCompteBancaire(Long accountId) throws BankAccountNotFoundException;
     void debit (Long accountId , double amountOperation , String description) throws BankAccountNotFoundException, SoldeNotSufficientException;
@@ -33,5 +33,10 @@ public interface CompteBancaireService {
 
     CompteOperationsHistoriqueDto getCompteHistorique(Long compteBancaireId, int page, int size) throws BankAccountNotFoundException;
 
-    List<ClientDto> searchClients(String keyword);
+    List<ClientDto> searchClients(String keyword) ;
+
+   ClientDto getClientByUsername(String keyword, int page) throws ClientNotFoundException;
+
+    ClientDto getClientByUsername(String username);
+
 }

@@ -4,18 +4,18 @@ import com.cigma.Ebank.dtos.CompteBancaireDto;
 import com.cigma.Ebank.dtos.CompteBancaireOperationDto;
 import com.cigma.Ebank.dtos.CompteOperationsHistoriqueDto;
 import com.cigma.Ebank.exceptions.BankAccountNotFoundException;
+import com.cigma.Ebank.exceptions.ClientNotFoundException;
 import com.cigma.Ebank.services.CompteBancaireService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-//@CrossOrigin("*")
+@CrossOrigin("*")
 public class CompteBancaireController {
     private CompteBancaireService compteBancaireService;
 
@@ -41,4 +41,21 @@ public class CompteBancaireController {
             @RequestParam (name = "size" ,defaultValue = "10") int size) throws BankAccountNotFoundException {
         return compteBancaireService.getCompteHistorique(compteBancaireId,page,size);
     }
+
+    @PostMapping ("/openAccount")
+    public CompteBancaireDto createCompteBancaire(@RequestParam double initialAmount, @RequestParam Long clientId ) throws ClientNotFoundException {
+        return compteBancaireService.SaveCompteBancaire(initialAmount,clientId);
+    }
+
+    /*@PostMapping("/create")
+    public ResponseEntity<?> createCompteBancaire(@RequestParam double initialAmount, @RequestParam Long clientId ){
+        try {
+            CompteBancaireDto compteBancaireDto = compteBancaireService.SaveCompteBancaire(initialAmount, clientId);
+            return new ResponseEntity<>(compteBancaireDto, HttpStatus.CREATED);
+        } catch (ClientNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }*/
 }

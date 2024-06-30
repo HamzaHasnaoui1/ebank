@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
@@ -38,9 +39,12 @@ public class SecurityConfig {
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Use stateless sessions
 
-        http.cors(cors -> cors.disable()); // Enable CORS (adjust this if needed)
+        //http.cors(); // Enable CORS
 
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())); // Disable frame options
+        http.headers(headers -> {
+            headers.frameOptions(frameOptions -> frameOptions.disable()); // Disable frame options
+            headers.referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)); // Set referrer policy
+        });
 
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/**", "/refreshToken/**", "/login/**").permitAll() // Allow specific requests
